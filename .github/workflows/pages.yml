@@ -40,7 +40,7 @@ jobs:
           test -n "$BOOT_APP0"
           cp "$BOOT_APP0" _site/firmware/boot_app0.bin
       - uses: actions/configure-pages@v5
-      - uses: actions/upload-pages-artifact@v3
+      - uses: actions/upload-pages-artifact@v4
         with:
           path: _site
 
