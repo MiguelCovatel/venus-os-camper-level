@@ -1,0 +1,2 @@
+# Optional. Leave the file empty when the broker does not require a password.
+# CAMPER_LEVEL_MQTT_PASSWORD='change-me'

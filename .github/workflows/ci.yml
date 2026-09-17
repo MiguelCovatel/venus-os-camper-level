@@ -1,0 +1,73 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  firmware:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: python -m pip install platformio
+      - run: pio run -d firmware -e esp32-c3-supermini
+      - run: pio test -d firmware -e native
+
+  daemon:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+          cache-dependency-path: venus/dbus-camper-level/requirements.txt
+      - run: python -m pip install -r venus/dbus-camper-level/requirements.txt
+      - run: python -m unittest discover -s venus/dbus-camper-level/tests -v
+
+  gui:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: python -m pip install PySide6-Essentials==6.8.3
+      - name: Build GUI v2 plugin
+        shell: bash
+        run: |
+          RCC="$(python - <<'PY'
+          import pathlib
+          import PySide6
+          root = pathlib.Path(PySide6.__file__).resolve().parent
+          matches = [p for p in root.rglob("rcc") if p.is_file()]
+          if not matches:
+              raise SystemExit("Qt rcc not found in PySide6")
+          print(matches[0])
+          PY
+          )"
+          RCC="$RCC" python venus/gui-v2/CamperLevel/build_plugin.py
+      - uses: actions/upload-artifact@v4
+        with:
+          name: CamperLevel-gui-plugin
+          path: venus/gui-v2/CamperLevel/build/CamperLevel.json
+
+  shell:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: sh -n scripts/install-venus.sh
+      - run: sh -n scripts/package-release.sh
+      - run: sh -n scripts/templates/install-bundle.sh
+      - run: sh -n scripts/templates/uninstall-bundle.sh
+      - run: sh -n venus/dbus-camper-level/install.sh
+      - run: sh -n venus/dbus-camper-level/uninstall.sh
+      - run: sh -n venus/gui-v2/CamperLevel/install.sh
+      - run: sh -n venus/gui-v2/CamperLevel/uninstall.sh
+      - run: python -m py_compile scripts/configure-esp.py

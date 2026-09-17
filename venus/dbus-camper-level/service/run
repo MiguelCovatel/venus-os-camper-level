@@ -1,0 +1,19 @@
+#!/bin/sh
+set -eu
+
+APP_DIR=/data/apps/dbus-camper-level
+CONFIG_FILE=/data/conf/camper-level/config.ini
+ENV_FILE=/data/conf/camper-level/environment
+
+if [ -f "$ENV_FILE" ]; then
+    set -a
+    # shellcheck disable=SC1090
+    . "$ENV_FILE"
+    set +a
+fi
+
+if [ -d "$APP_DIR/vendor" ]; then
+    export PYTHONPATH="$APP_DIR/vendor${PYTHONPATH:+:$PYTHONPATH}"
+fi
+
+exec python3 -u "$APP_DIR/main.py" --config "$CONFIG_FILE"

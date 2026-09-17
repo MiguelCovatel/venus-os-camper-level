@@ -1,0 +1,56 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - "v*"
+
+permissions:
+  contents: write
+
+jobs:
+  build-release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+          cache-dependency-path: venus/dbus-camper-level/requirements.txt
+      - run: python -m pip install platformio PySide6-Essentials==6.8.3
+      - name: Locate Qt rcc
+        shell: bash
+        run: |
+          RCC="$(python - <<'PY'
+          import pathlib
+          import PySide6
+          root = pathlib.Path(PySide6.__file__).resolve().parent
+          matches = [p for p in root.rglob("rcc") if p.is_file()]
+          if not matches:
+              raise SystemExit("Qt rcc not found in PySide6")
+          print(matches[0])
+          PY
+          )"
+          echo "RCC=$RCC" >> "$GITHUB_ENV"
+      - run: pio test -d firmware -e native
+      - run: python -m pip install -r venus/dbus-camper-level/requirements.txt
+      - run: python -m unittest discover -s venus/dbus-camper-level/tests -v
+      - run: sh scripts/package-release.sh
+      - uses: actions/upload-artifact@v4
+        with:
+          name: release-files
+          path: |
+            dist/camper-level-firmware.zip
+            dist/camper-level-firmware.zip.sha256
+            dist/venus-os-camper-level-venus.tar.gz
+            dist/venus-os-camper-level-venus.tar.gz.sha256
+      - uses: softprops/action-gh-release@v2
+        with:
+          generate_release_notes: true
+          prerelease: ${{ contains(github.ref_name, '-') }}
+          files: |
+            dist/camper-level-firmware.zip
+            dist/camper-level-firmware.zip.sha256
+            dist/venus-os-camper-level-venus.tar.gz
+            dist/venus-os-camper-level-venus.tar.gz.sha256

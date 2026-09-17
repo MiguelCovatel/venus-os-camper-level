@@ -1,0 +1,9 @@
+.pio/
+.test-build/
+.venv/
+__pycache__/
+*.pyc
+dist/
+firmware/.pio/
+firmware/.test-build/
+venus/gui-v2/CamperLevel/build/

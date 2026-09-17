@@ -1,0 +1,13 @@
+#!/bin/sh
+set -eu
+
+LOG_DIR=/var/log/dbus-camper-level
+mkdir -p "$LOG_DIR"
+if command -v svlogd >/dev/null 2>&1; then
+    exec svlogd -tt "$LOG_DIR"
+fi
+if command -v multilog >/dev/null 2>&1; then
+    exec multilog t s25000 n4 "$LOG_DIR"
+fi
+echo "Neither svlogd nor multilog is available" >&2
+exit 1
