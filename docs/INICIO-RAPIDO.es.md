@@ -10,7 +10,16 @@ camper: al final se corrige con la orientación y el botón **Nivel 0**.
 
 ## 2. Grabar el ESP32
 
-### Paquete de Release (recomendado)
+### Instalador web (recomendado)
+
+1. Abre `https://miguelcovatel.github.io/venus-os-camper-level/` desde Chrome o Edge en un ordenador.
+2. Conecta el ESP32-C3 por USB y pulsa **Instalar Camper Level**.
+3. Selecciona el puerto correspondiente y espera a que termine.
+
+No requiere Python, PlatformIO ni comandos. El instalador web no funciona desde Safari/iPhone;
+en ese caso utiliza un ordenador compatible o el método de recuperación inferior.
+
+### Paquete de Release (recuperación)
 
 1. Descarga `camper-level-firmware.zip`.
 2. Instala Python y `esptool` una sola vez: `py -m pip install esptool`.
@@ -32,11 +41,32 @@ pio run -e esp32-c3-supermini -t upload --upload-port COM16
 pio device monitor --port COM16 --baud 115200
 ```
 
-## 3. Configurar por USB
+## 3. Configurar desde el móvil
+
+Después de grabarlo, el ESP32 crea una red parecida a:
+
+```text
+CamperLevel-A1B2C3
+```
+
+1. Conecta el móvil a esa red con la contraseña `camperlevel`.
+2. La página debería abrirse automáticamente. Si no ocurre, abre `http://192.168.4.1`.
+3. Selecciona o escribe la Wi-Fi, configura MQTT y las medidas.
+4. Deja seleccionado **Burbuja camper (±0,5°)** salvo que necesites otro perfil.
+5. Cambia la contraseña de administración web y pulsa **Guardar y reiniciar**.
+
+Después se puede abrir el panel desde `http://camper-level.local`. El usuario es `admin` y la
+contraseña inicial, si no se cambió, es `camperlevel`. Si el ESP32 no consigue conectarse durante
+dos minutos, vuelve a levantar su red de configuración.
+
+La página muestra lecturas en vivo, permite guardar Nivel 0, modificar la configuración y cargar
+actualizaciones OTA mediante el archivo `firmware.bin` oficial.
+
+### Asistente USB de recuperación
 
 ### Asistente recomendado
 
-El ZIP incluye un asistente que pregunta los datos sin mostrar las contraseñas. Como `esptool`
+El ZIP también incluye un asistente que pregunta los datos sin mostrar las contraseñas. Como `esptool`
 ya instala `pyserial`, normalmente no hace falta añadir nada. Cierra antes cualquier monitor serie
 y ejecuta:
 
@@ -87,5 +117,6 @@ entrada, usa la ruta alternativa `Ajustes > Integraciones > UI Plugins > CamperL
 4. Espera a que deje de moverse y pulsa **Establecer nivel 0**.
 5. Comprueba que pitch, roll y las cuatro ruedas se aproximan a cero.
 
-La página indicará cuántos milímetros elevar en cada rueda. La rueda físicamente más alta siempre
-se normaliza a `0 mm`, así que los valores principales nunca son negativos.
+La página indicará cuánto elevar en cada rueda, redondeado a intervalos prácticos de 10 mm. La
+rueda físicamente más alta siempre se normaliza a `0 mm`, así que los valores principales nunca
+son negativos. El cálculo exacto se conserva internamente para diagnóstico.

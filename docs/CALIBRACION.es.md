@@ -24,6 +24,14 @@ pitch/roll. Corrige con `swap_axes`, `invert_pitch` e `invert_roll`, sin cambiar
 El cero compensa la inclinación de montaje. No es necesario introducir altura o posición
 longitudinal del MPU para medir un plano rígido en reposo.
 
-Pequeñas milésimas de grado son ruido normal. Un inicio razonable es una variación de `0,10°`
-durante `3 s`; después puede ajustarse con datos reales de la camper.
+## Sensibilidad práctica
 
+El perfil predeterminado **Burbuja camper** considera nivelado hasta `±0,5°`, aceptable hasta
+`±1,0°` y estable cuando la variación permanece por debajo de `0,20°` durante `3 s`.
+
+La interfaz muestra pitch/roll con una décima y las ruedas en intervalos de `10 mm`. No se pierde
+la precisión interna: simplemente se evita convertir ruido, flexión del suelo o movimiento de la
+suspensión en instrucciones imposibles de ejecutar con una rampa real.
+
+Desde la web se puede elegir **Precisa**, **Burbuja camper** o **Relajada**. Para uso normal se
+recomienda conservar el perfil de burbuja y afinarlo únicamente con experiencia real en el vehículo.

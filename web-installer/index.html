@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Instalar Camper Level</title>
+  <script type="module" src="https://unpkg.com/esp-web-tools@10/dist/web/install-button.js?module"></script>
+  <style>
+    :root{color-scheme:dark;--esp-tools-button-color:#2f81f7;--esp-tools-button-text-color:#fff;--esp-tools-button-border-radius:10px}
+    *{box-sizing:border-box}body{margin:0;background:#0d1117;color:#f0f6fc;font:17px system-ui,sans-serif}main{max-width:680px;margin:auto;padding:26px}
+    .card{background:#161b22;border:1px solid #30363d;border-radius:16px;padding:22px;margin:18px 0}h1{margin-bottom:4px}.muted{color:#8b949e}
+    li{margin:12px 0}code{background:#0d1117;padding:3px 6px;border-radius:5px}.install{text-align:center;padding:18px}a{color:#58a6ff}
+  </style>
+</head>
+<body><main>
+  <h1>Camper Level</h1><p class="muted">Instalador para ESP32-C3 SuperMini + MPU-6500/9250</p>
+  <section class="card"><h2>Antes de empezar</h2><ol>
+    <li>Utiliza Chrome o Edge en un ordenador.</li><li>Conecta el ESP32-C3 por USB.</li><li>Cierra cualquier monitor serie que esté usando el puerto.</li>
+  </ol><div class="install">
+    <esp-web-install-button manifest="manifest.json">
+      <button slot="activate">Instalar Camper Level</button>
+      <span slot="unsupported">Este navegador no permite grabar el ESP32. Abre la página en Chrome o Edge.</span>
+      <span slot="not-allowed">El navegador ha bloqueado el acceso al puerto USB.</span>
+    </esp-web-install-button>
+  </div></section>
+  <section class="card"><h2>Después de instalar</h2><ol>
+    <li>Desde el móvil, conéctate a la Wi-Fi <code>CamperLevel-XXXXXX</code>.</li>
+    <li>Contraseña: <code>camperlevel</code>.</li><li>Si la página no aparece sola, abre <code>http://192.168.4.1</code>.</li>
+    <li>Introduce Wi-Fi, MQTT y las medidas de la camper. Pulsa <b>Guardar y reiniciar</b>.</li>
+  </ol></section>
+  <p class="muted">Proyecto comunitario de <a href="https://github.com/MiguelCovatel/venus-os-camper-level">MiguelCovatel/venus-os-camper-level</a>.</p>
+</main></body></html>

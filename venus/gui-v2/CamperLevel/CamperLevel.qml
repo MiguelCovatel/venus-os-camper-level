@@ -12,6 +12,7 @@ Item {
 	property real frontRight: NaN
 	property real rearLeft: NaN
 	property real rearRight: NaN
+	readonly property bool levelComfortable: stateText === "LEVEL"
 	implicitWidth: Theme.geometry_listItem_width
 	implicitHeight: 238
 
@@ -20,7 +21,7 @@ Item {
 	}
 	function wheelColor(value) {
 		if (isNaN(value)) return Theme.color_font_secondary
-		if (value <= 2) return Theme.color_ok
+		if (value < 5) return Theme.color_ok
 		if (value >= 50) return Theme.color_critical
 		return Theme.color_warning
 	}
@@ -39,7 +40,7 @@ Item {
 			anchors.centerIn: parent
 			width: Math.max(105, Math.min(210, parent.width * 0.34)); height: 132; radius: 20
 			color: Theme.color_background_secondary; border.width: 2
-			border.color: !root.connected ? Theme.color_critical : root.stable ? Theme.color_ok : Theme.color_warning
+			border.color: !root.connected ? Theme.color_critical : root.levelComfortable ? Theme.color_ok : Theme.color_warning
 			Rectangle {
 				anchors.horizontalCenter: parent.horizontalCenter
 				width: 1; height: parent.height - 28; color: Theme.color_card_separator
@@ -50,9 +51,9 @@ Item {
 			}
 			Rectangle {
 				width: 18; height: 18; radius: 9
-				color: root.stable ? Theme.color_ok : Theme.color_primary
-				x: parent.width / 2 - width / 2 + (isNaN(root.roll) ? 0 : root.clamp(-root.roll * 8, -parent.width / 2 + 18, parent.width / 2 - 18))
-				y: parent.height / 2 - height / 2 + (isNaN(root.pitch) ? 0 : root.clamp(root.pitch * 8, -parent.height / 2 + 18, parent.height / 2 - 18))
+				color: root.levelComfortable ? Theme.color_ok : Theme.color_primary
+				x: parent.width / 2 - width / 2 + (isNaN(root.roll) || root.levelComfortable ? 0 : root.clamp(-root.roll * 8, -parent.width / 2 + 18, parent.width / 2 - 18))
+				y: parent.height / 2 - height / 2 + (isNaN(root.pitch) || root.levelComfortable ? 0 : root.clamp(root.pitch * 8, -parent.height / 2 + 18, parent.height / 2 - 18))
 				Behavior on x { NumberAnimation { duration: 250 } }
 				Behavior on y { NumberAnimation { duration: 250 } }
 			}
@@ -82,6 +83,6 @@ Item {
 		id: stateLabel
 		anchors.bottom: parent.bottom; anchors.horizontalCenter: parent.horizontalCenter
 		text: root.connected ? root.stateText : "OFFLINE"; font.bold: true
-		color: !root.connected ? Theme.color_critical : root.stable ? Theme.color_ok : Theme.color_warning
+		color: !root.connected ? Theme.color_critical : root.levelComfortable ? Theme.color_ok : Theme.color_warning
 	}
 }

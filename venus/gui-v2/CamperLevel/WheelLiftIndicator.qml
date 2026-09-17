@@ -7,7 +7,8 @@ Item {
 	property real liftMm: NaN
 	property color accentColor: Theme.color_font_secondary
 	readonly property real safeLift: isNaN(liftMm) ? 0 : Math.max(0, liftMm)
-	readonly property real liftPixels: Math.min(24, safeLift * 24 / 60)
+	readonly property real displayLift: Math.round(safeLift / 10) * 10
+	readonly property real liftPixels: Math.min(24, displayLift * 24 / 60)
 
 	Rectangle { anchors.fill: parent; radius: 8; color: Theme.color_background_primary }
 	Rectangle {
@@ -35,7 +36,7 @@ Item {
 	}
 	Label {
 		anchors { left: wheel.right; leftMargin: 8; right: parent.right; bottom: parent.bottom; bottomMargin: 9 }
-		text: isNaN(root.liftMm) ? "--" : "+" + Math.round(root.safeLift) + " mm"
+		text: isNaN(root.liftMm) ? "--" : "+" + root.displayLift + " mm"
 		color: root.accentColor; font.bold: true
 	}
 }

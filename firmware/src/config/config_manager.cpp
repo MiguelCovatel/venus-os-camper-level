@@ -8,7 +8,7 @@
 namespace camper {
 namespace {
 
-constexpr uint32_t kConfigVersion = 1;
+constexpr uint32_t kConfigVersion = 2;
 
 bool parseBool(const String& value, bool& result) {
   if (value == "1" || value.equalsIgnoreCase("true") || value.equalsIgnoreCase("on")) {
@@ -59,9 +59,20 @@ bool ConfigManager::begin() {
     preferences_.getString("mqttpass", network_.mqttPassword, sizeof(network_.mqttPassword));
     preferences_.getString("mqtttopic", network_.mqttBaseTopic, sizeof(network_.mqttBaseTopic));
     preferences_.getString("devicename", network_.deviceName, sizeof(network_.deviceName));
+    preferences_.getString("webpass", network_.webPassword, sizeof(network_.webPassword));
     network_.heartbeatIntervalMs = preferences_.getUInt("heartms", network_.heartbeatIntervalMs);
     network_.reconnectMinMs = preferences_.getUInt("retrymin", network_.reconnectMinMs);
     network_.reconnectMaxMs = preferences_.getUInt("retrymax", network_.reconnectMaxMs);
+  }
+
+  // Version 1 shipped laboratory-like defaults. Migrate only the untouched
+  // combination so an explicit user choice is never overwritten.
+  if (storedVersion == 1 && fabsf(level_.perfectToleranceDeg - 0.2f) < 0.001f &&
+      fabsf(level_.acceptableToleranceDeg - 0.5f) < 0.001f &&
+      fabsf(level_.stableVariationDeg - 0.15f) < 0.001f) {
+    level_.perfectToleranceDeg = 0.5f;
+    level_.acceptableToleranceDeg = 1.0f;
+    level_.stableVariationDeg = 0.2f;
   }
 
   String error;
@@ -115,6 +126,10 @@ bool ConfigManager::validate(const NetworkConfig& candidate, String& error) cons
       return false;
     }
   }
+  if (strlen(candidate.webPassword) < 8) {
+    error = "web_password must contain at least 8 characters";
+    return false;
+  }
   if (candidate.heartbeatIntervalMs < 250 || candidate.heartbeatIntervalMs > 60000 ||
       candidate.reconnectMinMs < 1000 || candidate.reconnectMinMs > candidate.reconnectMaxMs || candidate.reconnectMaxMs > 600000) {
     error = "invalid heartbeat/reconnect timing";
@@ -145,6 +160,7 @@ bool ConfigManager::save() {
   ok &= preferences_.putString("mqttpass", network_.mqttPassword) == strlen(network_.mqttPassword);
   ok &= preferences_.putString("mqtttopic", network_.mqttBaseTopic) == strlen(network_.mqttBaseTopic);
   ok &= preferences_.putString("devicename", network_.deviceName) == strlen(network_.deviceName);
+  ok &= preferences_.putString("webpass", network_.webPassword) == strlen(network_.webPassword);
   ok &= preferences_.putUInt("heartms", network_.heartbeatIntervalMs) == sizeof(uint32_t);
   ok &= preferences_.putUInt("retrymin", network_.reconnectMinMs) == sizeof(uint32_t);
   ok &= preferences_.putUInt("retrymax", network_.reconnectMaxMs) == sizeof(uint32_t);
@@ -169,12 +185,26 @@ bool ConfigManager::factoryReset() {
   return save();
 }
 
+bool ConfigManager::replace(const LevelConfig& level, const NetworkConfig& network, String& error) {
+  if (!validate(level, error) || !validate(network, error)) return false;
+  const LevelConfig previousLevel = level_;
+  const NetworkConfig previousNetwork = network_;
+  level_ = level;
+  network_ = network;
+  if (save()) return true;
+  level_ = previousLevel;
+  network_ = previousNetwork;
+  error = "NVS write failed";
+  return false;
+}
+
 bool ConfigManager::setValue(const String& key, const String& value, String& error) {
   LevelConfig level = level_;
   NetworkConfig network = network_;
   const bool isBool = key == "invert_pitch" || key == "invert_roll" || key == "swap_axes";
   const bool isText = key == "wifi_ssid" || key == "wifi_password" || key == "mqtt_server" ||
-                      key == "mqtt_username" || key == "mqtt_password" || key == "mqtt_base_topic" || key == "device_name";
+                      key == "mqtt_username" || key == "mqtt_password" || key == "mqtt_base_topic" ||
+                      key == "device_name" || key == "web_password";
   const bool isInteger = key.endsWith("_ms") || key == "mqtt_port";
   double numeric = 0;
   if (!isBool && !isText) {
@@ -195,6 +225,7 @@ bool ConfigManager::setValue(const String& key, const String& value, String& err
   else if (key == "mqtt_password") { if (!copyText(text, network.mqttPassword, error)) return false; }
   else if (key == "mqtt_base_topic") { if (!copyText(text, network.mqttBaseTopic, error)) return false; }
   else if (key == "device_name") { if (!copyText(text, network.deviceName, error)) return false; }
+  else if (key == "web_password") { if (!copyText(text, network.webPassword, error)) return false; }
   else if (key == "mqtt_port") { if (numeric < 1 || numeric > 65535) { error = "mqtt_port must be 1..65535"; return false; } network.mqttPort = static_cast<uint16_t>(numeric); }
   else if (key == "heartbeat_interval_ms") network.heartbeatIntervalMs = static_cast<uint32_t>(numeric);
   else if (key == "reconnect_min_ms") network.reconnectMinMs = static_cast<uint32_t>(numeric);
@@ -233,8 +264,8 @@ void ConfigManager::print(Stream& output) const {
   output.printf("wifi_ssid=%s\nwifi_password=%s\nmqtt_server=%s\nmqtt_port=%u\nmqtt_username=%s\nmqtt_password=%s\n",
                 network_.wifiSsid, network_.wifiPassword[0] ? "<set>" : "<empty>", network_.mqttServer, network_.mqttPort,
                 network_.mqttUsername, network_.mqttPassword[0] ? "<set>" : "<empty>");
-  output.printf("mqtt_base_topic=%s\ndevice_name=%s\nheartbeat_interval_ms=%lu\nreconnect_min_ms=%lu\nreconnect_max_ms=%lu\n",
-                network_.mqttBaseTopic, network_.deviceName, static_cast<unsigned long>(network_.heartbeatIntervalMs),
+  output.printf("mqtt_base_topic=%s\ndevice_name=%s\nweb_password=%s\nheartbeat_interval_ms=%lu\nreconnect_min_ms=%lu\nreconnect_max_ms=%lu\n",
+                network_.mqttBaseTopic, network_.deviceName, network_.webPassword[0] ? "<set>" : "<empty>", static_cast<unsigned long>(network_.heartbeatIntervalMs),
                 static_cast<unsigned long>(network_.reconnectMinMs), static_cast<unsigned long>(network_.reconnectMaxMs));
 }
 

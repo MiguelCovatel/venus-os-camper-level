@@ -71,3 +71,5 @@ jobs:
       - run: sh -n venus/gui-v2/CamperLevel/install.sh
       - run: sh -n venus/gui-v2/CamperLevel/uninstall.sh
       - run: python -m py_compile scripts/configure-esp.py
+      - run: python -m json.tool web-installer/manifest.json
+      - run: test -s web-installer/index.html

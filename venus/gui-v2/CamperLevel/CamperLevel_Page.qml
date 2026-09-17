@@ -66,8 +66,8 @@ Page {
 					rearLeft: root.numberValue(rearLeft); rearRight: root.numberValue(rearRight)
 				}
 			}
-			ListText { text: "Pitch"; secondaryText: root.formatted(pitch, 2, "°") }
-			ListText { text: "Roll"; secondaryText: root.formatted(roll, 2, "°") }
+			ListText { text: "Pitch"; secondaryText: root.formatted(pitch, 1, "°") }
+			ListText { text: "Roll"; secondaryText: root.formatted(roll, 1, "°") }
 			ListButton {
 				text: "Set current position as LEVEL 0"
 				secondaryText: root.zeroStatusText()

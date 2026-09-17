@@ -11,7 +11,7 @@ import subprocess
 from pathlib import Path
 
 PLUGIN_NAME = "CamperLevel"
-PLUGIN_VERSION = "1.0.0"
+PLUGIN_VERSION = "1.1.0"
 DEVICE_PRODUCT_ID = "0xC512"
 RESOURCE_PREFIX = f"{PLUGIN_NAME}_v{PLUGIN_VERSION.replace('.', '_')}"
 QML_FILES = ("CamperLevel_Page.qml", "CamperLevel.qml", "WheelLiftIndicator.qml")

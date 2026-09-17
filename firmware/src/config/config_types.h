@@ -13,9 +13,11 @@ struct LevelConfig {
   bool invertPitch = false;
   bool invertRoll = false;
   bool swapAxes = false;
-  float perfectToleranceDeg = 0.2f;
-  float acceptableToleranceDeg = 0.5f;
-  float stableVariationDeg = 0.15f;
+  // Practical "camper bubble" defaults. The IMU remains precise internally,
+  // but normal suspension/floor movement is not presented as a levelling error.
+  float perfectToleranceDeg = 0.5f;
+  float acceptableToleranceDeg = 1.0f;
+  float stableVariationDeg = 0.2f;
   uint32_t stableDurationMs = 3000;
 };
 
@@ -28,6 +30,7 @@ struct NetworkConfig {
   char mqttPassword[65] = "";
   char mqttBaseTopic[65] = "camper/level";
   char deviceName[33] = "camper-level";
+  char webPassword[65] = "camperlevel";
   uint32_t heartbeatIntervalMs = 1000;
   uint32_t reconnectMinMs = 5000;
   uint32_t reconnectMaxMs = 60000;

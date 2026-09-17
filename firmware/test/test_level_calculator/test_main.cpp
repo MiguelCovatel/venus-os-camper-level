@@ -58,12 +58,33 @@ void unequalTracks() {
   normalized(r.correctionMm);
 }
 void quality() {
-  TEST_ASSERT_EQUAL_INT(static_cast<int>(camper::LevelQuality::LEVEL), static_cast<int>(camper::LevelCalculator::quality(.2f, -.1f, .2f, .5f)));
-  TEST_ASSERT_EQUAL_INT(static_cast<int>(camper::LevelQuality::SLIGHTLY_UNLEVEL), static_cast<int>(camper::LevelCalculator::quality(.21f, -.5f, .2f, .5f)));
-  TEST_ASSERT_EQUAL_INT(static_cast<int>(camper::LevelQuality::UNLEVEL), static_cast<int>(camper::LevelCalculator::quality(.1f, -.51f, .2f, .5f)));
+  TEST_ASSERT_EQUAL_INT(static_cast<int>(camper::LevelQuality::LEVEL), static_cast<int>(camper::LevelCalculator::quality(.5f, -.1f, .5f, 1.0f)));
+  TEST_ASSERT_EQUAL_INT(static_cast<int>(camper::LevelQuality::SLIGHTLY_UNLEVEL), static_cast<int>(camper::LevelCalculator::quality(.51f, -1.0f, .5f, 1.0f)));
+  TEST_ASSERT_EQUAL_INT(static_cast<int>(camper::LevelQuality::UNLEVEL), static_cast<int>(camper::LevelCalculator::quality(.1f, -1.01f, .5f, 1.0f)));
+}
+void practicalCorrection() {
+  camper::WheelValues exact;
+  exact.frontLeft = 3.0f; exact.frontRight = 17.0f;
+  exact.rearLeft = 24.0f; exact.rearRight = 38.0f;
+  const auto practical = camper::LevelCalculator::practicalCorrection(exact);
+  TEST_ASSERT_FLOAT_WITHIN(kTolerance, 0.0f, practical.frontLeft);
+  TEST_ASSERT_FLOAT_WITHIN(kTolerance, 20.0f, practical.frontRight);
+  TEST_ASSERT_FLOAT_WITHIN(kTolerance, 20.0f, practical.rearLeft);
+  TEST_ASSERT_FLOAT_WITHIN(kTolerance, 40.0f, practical.rearRight);
+}
+void qualityHysteresis() {
+  using camper::LevelQuality;
+  TEST_ASSERT_EQUAL_INT(static_cast<int>(LevelQuality::LEVEL),
+      static_cast<int>(camper::LevelCalculator::qualityWithHysteresis(.55f, 0, .5f, 1.0f, LevelQuality::LEVEL, .1f)));
+  TEST_ASSERT_EQUAL_INT(static_cast<int>(LevelQuality::SLIGHTLY_UNLEVEL),
+      static_cast<int>(camper::LevelCalculator::qualityWithHysteresis(.65f, 0, .5f, 1.0f, LevelQuality::LEVEL, .1f)));
+  TEST_ASSERT_EQUAL_INT(static_cast<int>(LevelQuality::UNLEVEL),
+      static_cast<int>(camper::LevelCalculator::qualityWithHysteresis(.95f, 0, .5f, 1.0f, LevelQuality::UNLEVEL, .1f)));
+  TEST_ASSERT_EQUAL_INT(static_cast<int>(LevelQuality::SLIGHTLY_UNLEVEL),
+      static_cast<int>(camper::LevelCalculator::qualityWithHysteresis(.85f, 0, .5f, 1.0f, LevelQuality::UNLEVEL, .1f)));
 }
 }
-int runTests() { UNITY_BEGIN(); RUN_TEST(level); RUN_TEST(pitchPositive); RUN_TEST(pitchNegative); RUN_TEST(rollPositive); RUN_TEST(rollNegative); RUN_TEST(combined); RUN_TEST(unequalTracks); RUN_TEST(quality); return UNITY_END(); }
+int runTests() { UNITY_BEGIN(); RUN_TEST(level); RUN_TEST(pitchPositive); RUN_TEST(pitchNegative); RUN_TEST(rollPositive); RUN_TEST(rollNegative); RUN_TEST(combined); RUN_TEST(unequalTracks); RUN_TEST(quality); RUN_TEST(practicalCorrection); RUN_TEST(qualityHysteresis); return UNITY_END(); }
 #ifdef ARDUINO
 void setup() { delay(500); runTests(); } void loop() {}
 #else

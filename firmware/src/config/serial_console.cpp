@@ -9,7 +9,7 @@ void SerialConsole::printHelp(Stream& output) {
   output.println("  invert_pitch, invert_roll, swap_axes, perfect_tolerance_deg,");
   output.println("  acceptable_tolerance_deg, stable_variation_deg, stable_duration_ms");
   output.println("Network keys: wifi_ssid, wifi_password, mqtt_server, mqtt_port,");
-  output.println("  mqtt_username, mqtt_password, mqtt_base_topic, device_name,");
+  output.println("  mqtt_username, mqtt_password, mqtt_base_topic, device_name, web_password,");
   output.println("  heartbeat_interval_ms, reconnect_min_ms, reconnect_max_ms");
   output.println("Use '-' as an empty text value. Example: SET mqtt_username -");
 }

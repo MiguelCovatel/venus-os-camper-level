@@ -17,6 +17,9 @@ Esta es la edición independiente de nivel; no incluye sensores de gases.
 - MQTT con secuencia, `boot_id`, uptime, estado del IMU y LWT.
 - Desconexión fail-safe: Venus OS invalida los datos antiguos.
 - Página gráfica GUI v2, local y en Remote Console.
+- Instalación del firmware desde el navegador, sin Python ni PlatformIO.
+- Portal web móvil para Wi-Fi, MQTT, medidas, orientación, nivel cero y OTA.
+- Presentación práctica tipo burbuja: décimas de grado y correcciones de 10 mm.
 - Simulador y tests para desarrollar sin hardware.
 
 ## Hardware mínimo
@@ -38,8 +41,8 @@ Consulta [el esquema completo](docs/CABLEADO.es.md) antes de soldar.
 
 ## Instalación rápida
 
-1. Descarga `camper-level-firmware.zip` desde **Releases**.
-2. Graba el ESP32 por USB y ejecuta el asistente `configure-esp.py` para introducir Wi-Fi, MQTT y medidas sin recompilar.
+1. Abre el [instalador web](https://miguelcovatel.github.io/venus-os-camper-level/) con Chrome o Edge y graba el ESP32 por USB.
+2. Conecta el móvil a `CamperLevel-XXXXXX` con la clave `camperlevel` y completa la página de configuración.
 3. Descarga el paquete Venus OS y ejecuta su único `install.sh`.
 4. Abre `Lista de dispositivos > Camper Level` y pulsa **Nivel 0** con la camper nivelada.
    Como acceso alternativo, usa `Ajustes > Integraciones > UI Plugins > CamperLevel`.
@@ -74,6 +77,9 @@ ESP32-C3 ── Wi-Fi/MQTT ──► broker ──► dbus-camper-level ──�
 El ESP32 no necesita conexión directa con la Raspberry Pi/GX. Solo el ESP32 y Venus OS deben
 poder alcanzar el mismo broker MQTT. Más detalles en
 [Arquitectura](docs/ARQUITECTURA.md) y [MQTT](docs/MQTT.md).
+
+Una vez configurado, el panel del ESP32 está en `http://camper-level.local` con usuario `admin`.
+La grabación por PowerShell y el asistente USB siguen disponibles como método de recuperación.
 
 ## Desarrollo
 

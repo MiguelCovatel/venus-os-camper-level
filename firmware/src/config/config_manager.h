@@ -13,6 +13,7 @@ class ConfigManager {
   const LevelConfig& level() const { return level_; }
   const NetworkConfig& network() const { return network_; }
   bool setValue(const String& key, const String& value, String& error);
+  bool replace(const LevelConfig& level, const NetworkConfig& network, String& error);
   bool setLevelZero(float orientedPitchDeg, float orientedRollDeg);
   bool factoryReset();
   void print(Stream& output) const;

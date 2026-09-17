@@ -11,6 +11,7 @@
 #include "level/level_calculator.h"
 #include "level/stability_detector.h"
 #include "sensors/imu.h"
+#include "web/web_config.h"
 
 #ifndef CAMPER_I2C_SDA
 #define CAMPER_I2C_SDA 8
@@ -20,18 +21,20 @@
 #endif
 
 namespace {
-constexpr char kFirmwareVersion[] = "1.0.0";
+constexpr char kFirmwareVersion[] = "1.1.0";
 constexpr size_t kTelemetryBytes = 1450;
 camper::ConfigManager config;
 camper::SerialConsole console(config);
 camper::Imu imu;
 camper::MqttTransport mqtt;
+camper::WebConfig webConfig;
 camper::StabilityDetector stability;
 camper::LevelResult levelResult;
+camper::WheelValues practicalCorrection;
 camper::StabilityState stabilityState = camper::StabilityState::MOVING;
 camper::LevelQuality levelQuality = camper::LevelQuality::UNLEVEL;
 float orientedPitch = 0, orientedRoll = 0, levelPitch = 0, levelRoll = 0;
-bool levelValid = false, imuStarted = false;
+bool levelValid = false, imuStarted = false, qualityInitialized = false;
 uint32_t nextSampleMs = 0, nextReportMs = 0, nextImuRetryMs = 0;
 char telemetry[kTelemetryBytes];
 
@@ -50,7 +53,7 @@ bool applyRemoteSetting(const char* key, const char* value, String& error) {
     if (end == value || *end || requestId < 1 || requestId > 2147483647UL) { error = "invalid level-zero request id"; return false; }
     if (!levelValid || !isfinite(orientedPitch) || !isfinite(orientedRoll)) { error = "IMU level reading is not valid"; return false; }
     if (!config.setLevelZero(orientedPitch, orientedRoll)) { error = "NVS write failed"; return false; }
-    stability.reset(); nextSampleMs = 0; nextReportMs = 0;
+    stability.reset(); qualityInitialized = false; nextSampleMs = 0; nextReportMs = 0;
     Serial.printf("INFO remote level zero saved: request=%lu pitch=%.4f roll=%.4f\n", requestId, orientedPitch, orientedRoll);
     return true;
   }
@@ -61,7 +64,7 @@ bool applyRemoteSetting(const char* key, const char* value, String& error) {
   for (const char* candidate : allowed) if (!strcmp(key, candidate)) { permitted = true; break; }
   if (!permitted) { error = "remote setting is not allowed"; return false; }
   const bool saved = config.setValue(String(key), String(value), error);
-  if (saved) { stability.reset(); nextSampleMs = 0; nextReportMs = 0; }
+  if (saved) { stability.reset(); qualityInitialized = false; nextSampleMs = 0; nextReportMs = 0; }
   return saved;
 }
 
@@ -87,10 +90,10 @@ bool buildTelemetry(char* output, size_t capacity, uint32_t now, uint32_t sequen
   char pitch[24], roll[24], fl[24], fr[24], rl[24], rr[24], rfl[24], rfr[24], rrl[24], rrr[24];
   jsonNumber(pitch, sizeof(pitch), levelValid ? levelPitch : NAN, 3);
   jsonNumber(roll, sizeof(roll), levelValid ? levelRoll : NAN, 3);
-  jsonNumber(fl, sizeof(fl), levelValid ? levelResult.correctionMm.frontLeft : NAN, 1);
-  jsonNumber(fr, sizeof(fr), levelValid ? levelResult.correctionMm.frontRight : NAN, 1);
-  jsonNumber(rl, sizeof(rl), levelValid ? levelResult.correctionMm.rearLeft : NAN, 1);
-  jsonNumber(rr, sizeof(rr), levelValid ? levelResult.correctionMm.rearRight : NAN, 1);
+  jsonNumber(fl, sizeof(fl), levelValid ? practicalCorrection.frontLeft : NAN, 0);
+  jsonNumber(fr, sizeof(fr), levelValid ? practicalCorrection.frontRight : NAN, 0);
+  jsonNumber(rl, sizeof(rl), levelValid ? practicalCorrection.rearLeft : NAN, 0);
+  jsonNumber(rr, sizeof(rr), levelValid ? practicalCorrection.rearRight : NAN, 0);
   jsonNumber(rfl, sizeof(rfl), levelValid ? levelResult.relativeHeightMm.frontLeft : NAN, 1);
   jsonNumber(rfr, sizeof(rfr), levelValid ? levelResult.relativeHeightMm.frontRight : NAN, 1);
   jsonNumber(rrl, sizeof(rrl), levelValid ? levelResult.relativeHeightMm.rearLeft : NAN, 1);
@@ -147,10 +150,10 @@ void publishTelemetry(uint32_t now) {
   ok &= mqtt.publishEnvelope("stable", levelValid && stabilityState == camper::StabilityState::STABLE ? "true" : "false", timestamp, now, sequence, status);
   text("state", camper::StabilityDetector::stateName(stabilityState));
   text("quality", camper::LevelCalculator::qualityName(levelQuality));
-  number("wheels/fl", levelValid ? levelResult.correctionMm.frontLeft : NAN, 1);
-  number("wheels/fr", levelValid ? levelResult.correctionMm.frontRight : NAN, 1);
-  number("wheels/rl", levelValid ? levelResult.correctionMm.rearLeft : NAN, 1);
-  number("wheels/rr", levelValid ? levelResult.correctionMm.rearRight : NAN, 1);
+  number("wheels/fl", levelValid ? practicalCorrection.frontLeft : NAN, 0);
+  number("wheels/fr", levelValid ? practicalCorrection.frontRight : NAN, 0);
+  number("wheels/rl", levelValid ? practicalCorrection.rearLeft : NAN, 0);
+  number("wheels/rr", levelValid ? practicalCorrection.rearRight : NAN, 0);
   integer("diagnostic/uptime", now);
   number("diagnostic/rssi", static_cast<float>(mqtt.diagnostics().rssiDbm), 0);
   mqtt.finishBatch(now, ok);
@@ -170,6 +173,10 @@ void setup() {
   if (!camper::Watchdog::begin()) Serial.println("ERROR task watchdog initialization failed");
   mqtt.setConfigCommandHandler(applyRemoteSetting);
   mqtt.begin(config.network(), millis());
+  webConfig.begin(config, millis());
+  if (webConfig.accessPointActive()) {
+    Serial.printf("SETUP connect to %s with password camperlevel\n", webConfig.accessPointName());
+  }
 }
 
 void loop() {
@@ -190,10 +197,18 @@ void loop() {
       levelRoll = orientedRoll - settings.rollOffsetDeg;
       stabilityState = stability.update(levelPitch, levelRoll, now, settings.stableVariationDeg, settings.stableDurationMs);
       levelResult = camper::LevelCalculator::calculate(levelPitch, levelRoll, settings.wheelbaseMm, settings.frontTrackMm, settings.rearTrackMm);
-      levelQuality = camper::LevelCalculator::quality(levelPitch, levelRoll, settings.perfectToleranceDeg, settings.acceptableToleranceDeg);
+      practicalCorrection = camper::LevelCalculator::practicalCorrection(levelResult.correctionMm);
+      if (!qualityInitialized) {
+        levelQuality = camper::LevelCalculator::quality(
+            levelPitch, levelRoll, settings.perfectToleranceDeg, settings.acceptableToleranceDeg);
+        qualityInitialized = true;
+      } else {
+        levelQuality = camper::LevelCalculator::qualityWithHysteresis(
+            levelPitch, levelRoll, settings.perfectToleranceDeg, settings.acceptableToleranceDeg, levelQuality, 0.1f);
+      }
       levelValid = true;
     } else if (!imu.healthy(now)) {
-      levelValid = false; stabilityState = camper::StabilityState::MOVING;
+      levelValid = false; qualityInitialized = false; stabilityState = camper::StabilityState::MOVING;
     }
   }
   if (static_cast<int32_t>(now - nextReportMs) >= 0) {
@@ -202,6 +217,20 @@ void loop() {
     else Serial.println("ERROR telemetry JSON buffer exhausted");
   }
   if (mqtt.shouldPublish(now)) publishTelemetry(now);
+  camper::WebLevelStatus webStatus;
+  webStatus.valid = levelValid;
+  webStatus.orientedPitchDeg = orientedPitch;
+  webStatus.orientedRollDeg = orientedRoll;
+  webStatus.pitchDeg = levelPitch;
+  webStatus.rollDeg = levelRoll;
+  webStatus.practicalCorrectionMm = practicalCorrection;
+  webStatus.stability = stabilityState;
+  webStatus.quality = levelQuality;
+  webConfig.update(now, webStatus);
+  if (webConfig.takeLevelZeroApplied()) {
+    stability.reset(); qualityInitialized = false; nextSampleMs = 0; nextReportMs = 0;
+    Serial.printf("INFO web level zero saved: pitch=%.4f roll=%.4f\n", orientedPitch, orientedRoll);
+  }
   if (console.poll(Serial, levelValid ? orientedPitch : NAN, levelValid ? orientedRoll : NAN) == camper::ConsoleAction::REBOOT) {
     Serial.println("INFO rebooting"); Serial.flush(); delay(100); ESP.restart();
   }

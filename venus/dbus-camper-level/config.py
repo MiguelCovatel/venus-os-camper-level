@@ -71,7 +71,7 @@ class AppConfig:
                 product_name=service.get("product_name", "Camper Level").strip(),
                 custom_name=service.get("custom_name", "Camper Level").strip(),
                 serial=service.get("serial", "camper-level").strip(),
-                firmware_version=service.get("firmware_version", "1.0.0").strip(),
+                firmware_version=service.get("firmware_version", "1.1.0").strip(),
                 warning_timeout_s=timeouts.getfloat("warning_s", 10.0),
                 critical_timeout_s=timeouts.getfloat("critical_s", 30.0),
                 message_max_age_s=timeouts.getfloat("message_max_age_s", 30.0),

@@ -13,7 +13,18 @@ Firmware independiente para **ESP32-C3 SuperMini + MPU-6500/MPU-9250**. No inclu
 
 Conecta `NCS/CS` a 3V3 para forzar el modo I2C. Si el breakout integra su propio pull-up puede quedar libre, pero la conexión explícita a 3V3 es la opción recomendada; no lo conectes a GND durante el uso I2C. `AD0` abierto/GND selecciona `0x68`; a 3V3 selecciona `0x69`.
 
-## Primera configuración por USB
+## Primera configuración por web
+
+Después de grabarlo, conecta el móvil a `CamperLevel-XXXXXX` con contraseña `camperlevel`. El
+portal se abre automáticamente; si no, visita `http://192.168.4.1`. Desde allí se configuran
+Wi-Fi, MQTT, medidas, orientación, sensibilidad, Nivel 0 y actualizaciones OTA.
+
+Tras conectarlo a la red, abre `http://camper-level.local` con usuario `admin`. La contraseña
+inicial es `camperlevel` y debe cambiarse durante la puesta en marcha.
+
+El método recomendado de grabación es el instalador web publicado en GitHub Pages.
+
+## Recuperación por USB
 
 El binario público se entrega sin credenciales. Abre el monitor serie a 115200 baudios y envía líneas terminadas en Enter:
 
@@ -53,7 +64,8 @@ Cada valor individual es un sobre JSON con timestamp, uptime, secuencia, boot ID
 
 ## Tests
 
-Los tests cubren nivel, pitch/roll positivos y negativos, combinación de ejes, vías distintas, normalización sin negativos, tolerancias y máquina de estabilidad.
+Los tests cubren nivel, pitch/roll positivos y negativos, combinación de ejes, vías distintas,
+normalización sin negativos, redondeo práctico, histéresis, tolerancias y máquina de estabilidad.
 
 ```powershell
 pio test -e native

@@ -23,7 +23,7 @@ Ejemplo orientativo:
 ```json
 {
   "schema_version": 1,
-  "firmware_version": "1.0.0",
+  "firmware_version": "1.1.0",
   "timestamp_ms": 1780000000000,
   "time_synced": true,
   "sample_time_ms": 125400,
@@ -63,7 +63,10 @@ Ejemplo orientativo:
 
 También se publican topics individuales: `status`, `pitch`, `roll`, `stable`, `state`, `quality`,
 `wheels/fl`, `wheels/fr`, `wheels/rl`, `wheels/rr`, `diagnostic/uptime` y `diagnostic/rssi`.
-El esquema exacto de `v1.0.0` es el que validen los tests del daemon.
+El esquema exacto de cada versión es el que validan los tests del daemon.
+
+Desde firmware `1.1`, `wheel_mm` y los topics `wheels/*` contienen la corrección práctica
+redondeada a `10 mm`. `relative_height_mm` conserva la geometría sin redondear para diagnóstico.
 
 ## Configuración remota
 
