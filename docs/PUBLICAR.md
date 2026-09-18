@@ -37,5 +37,9 @@ El ZIP incluye `camper-level-factory.bin`, una imagen unificada para grabar desd
 
 ## ESP Web Tools
 
-Puede añadirse cuando el firmware tenga portal cautivo o configurador USB web. Un manifiesto solo
-graba el binario y no resuelve Wi-Fi/MQTT; por eso aún no se presenta como método principal.
+El workflow `pages.yml` compila y publica el instalador web, su manifiesto y los cuatro binarios en
+GitHub Pages. Después de grabar, el portal cautivo del ESP32 resuelve Wi-Fi, IP de Venus OS,
+medidas, orientación y Nivel 0, por lo que ESP Web Tools es el método principal.
+
+Antes de etiquetar una versión hay que verificar que la página, `manifest.json`, `firmware.bin`,
+`bootloader.bin`, `partitions.bin` y `boot_app0.bin` respondan correctamente.

@@ -6,13 +6,22 @@ Sin una configuración válida, el ESP32 crea `CamperLevel-XXXXXX` con contrase�
 El portal cautivo dirige a `http://192.168.4.1` y permite configurar:
 
 - Wi-Fi de 2,4 GHz.
-- Broker, puerto y credenciales MQTT.
+- IP local de Venus OS. El puerto y credenciales MQTT quedan ocultos como opciones avanzadas.
 - Nombre y topic del dispositivo.
 - Batalla y vías.
 - Perfil de sensibilidad y orientación del MPU.
 - Contraseña de administración de la web.
 
 Al guardar se valida el conjunto completo antes de escribirlo en NVS. Después el ESP32 reinicia.
+
+## Conexión recomendada con Venus OS
+
+1. Activa `Ajustes > Integraciones > Acceso MQTT` en Venus OS.
+2. Busca su IP en `Ajustes > Conectividad > Wi-Fi/Ethernet`.
+3. Escribe esa IP en **IP de Venus OS**.
+
+No hace falta crear usuario ni contraseña: deja el puerto `1883` y el topic `camper/level`. Los
+campos avanzados solo se utilizan cuando el usuario decide instalar su propio broker externo.
 
 ## Acceso habitual
 

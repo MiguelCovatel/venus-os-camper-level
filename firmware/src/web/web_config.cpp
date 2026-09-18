@@ -33,14 +33,16 @@ details{margin-top:16px;border-top:1px solid var(--line);padding-top:12px}summar
 
 const char kPageMiddle[] PROGMEM = R"HTML("><datalist id="wifi-list"></datalist>
 <label>Contraseña Wi-Fi</label><input name="wifi_password" type="password" autocomplete="new-password" placeholder="Déjala vacía para conservarla">
-<h2>Servidor MQTT</h2><label>Dirección o IP</label><input required name="mqtt_server" value=")HTML";
+<h2>Conexión con Venus OS</h2>
+<p class="muted">Activa <b>Ajustes → Integraciones → Acceso MQTT</b> en Venus OS. Después introduce su IP local, la misma que aparece en Conectividad → Wi-Fi/Ethernet.</p>
+<label>IP de Venus OS</label><input required name="mqtt_server" placeholder="Ejemplo: 192.168.1.50" value=")HTML";
 
-const char kPageDimensions[] PROGMEM = R"HTML("><div class="inline"><div><label>Puerto</label><input required name="mqtt_port" type="number" min="1" max="65535" value=")HTML";
+const char kPageDimensions[] PROGMEM = R"HTML("><details><summary>MQTT avanzado / broker externo</summary><p class="muted">Con Venus OS normal no cambies estos campos.</p><div class="inline"><div><label>Puerto</label><input required name="mqtt_port" type="number" min="1" max="65535" value=")HTML";
 
 const char kPageTailA[] PROGMEM = R"HTML("></div><div><label>Usuario</label><input name="mqtt_username" value=")HTML";
 
 const char kPageTailB[] PROGMEM = R"HTML("></div></div><label>Contraseña MQTT</label><input name="mqtt_password" type="password" autocomplete="new-password" placeholder="Déjala vacía para conservarla">
-<h2>Medidas de la camper</h2><div class="inline"><div><label>Batalla (mm)</label><input required name="wheelbase_mm" type="number" min="500" max="12000" step="10" value=")HTML";
+</details><h2>Medidas de la camper</h2><div class="inline"><div><label>Batalla (mm)</label><input required name="wheelbase_mm" type="number" min="500" max="12000" step="10" value=")HTML";
 
 const char kPageTailC[] PROGMEM = R"HTML("></div><div><label>Vía delantera (mm)</label><input required name="front_track_mm" type="number" min="500" max="4000" step="10" value=")HTML";
 

@@ -1,10 +1,10 @@
 # Sustituye los ejemplos. No publiques este fichero después de añadir contraseñas.
 SET wifi_ssid MiRedCamper
 SET wifi_password CAMBIAR
-SET mqtt_server 192.168.1.10
+SET mqtt_server IP_DE_VENUS_OS
 SET mqtt_port 1883
-SET mqtt_username camper-level
-SET mqtt_password CAMBIAR
+SET mqtt_username -
+SET mqtt_password -
 SET mqtt_base_topic camper/level
 SET device_name camper-level
 SET wheelbase_mm 3600
@@ -12,4 +12,3 @@ SET front_track_mm 1750
 SET rear_track_mm 1750
 SHOW
 REBOOT
-

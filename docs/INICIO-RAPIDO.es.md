@@ -43,6 +43,10 @@ pio device monitor --port COM16 --baud 115200
 
 ## 3. Configurar desde el móvil
 
+Antes, en Venus OS activa `Ajustes > Integraciones > Acceso MQTT`. Busca también su dirección en
+`Ajustes > Conectividad > Wi-Fi/Ethernet > Dirección IP`. Es el único dato MQTT que necesita una
+instalación normal.
+
 Después de grabarlo, el ESP32 crea una red parecida a:
 
 ```text
@@ -51,7 +55,8 @@ CamperLevel-A1B2C3
 
 1. Conecta el móvil a esa red con la contraseña `camperlevel`.
 2. La página debería abrirse automáticamente. Si no ocurre, abre `http://192.168.4.1`.
-3. Selecciona o escribe la Wi-Fi, configura MQTT y las medidas.
+3. Selecciona o escribe la Wi-Fi, introduce la **IP de Venus OS** y completa las medidas.
+   Deja puerto `1883`, usuario vacío, contraseña vacía y topic `camper/level`.
 4. Deja seleccionado **Burbuja camper (±0,5°)** salvo que necesites otro perfil.
 5. Cambia la contraseña de administración web y pulsa **Guardar y reiniciar**.
 
@@ -63,8 +68,6 @@ La página muestra lecturas en vivo, permite guardar Nivel 0, modificar la confi
 actualizaciones OTA mediante el archivo `firmware.bin` oficial.
 
 ### Asistente USB de recuperación
-
-### Asistente recomendado
 
 El ZIP también incluye un asistente que pregunta los datos sin mostrar las contraseñas. Como `esptool`
 ya instala `pyserial`, normalmente no hace falta añadir nada. Cierra antes cualquier monitor serie
@@ -83,10 +86,10 @@ Abre el monitor serie a 115200 baudios. Escribe cada orden y pulsa Intro:
 ```text
 SET wifi_ssid MiRed
 SET wifi_password MiClave
-SET mqtt_server 192.168.1.10
+SET mqtt_server IP_DE_VENUS_OS
 SET mqtt_port 1883
-SET mqtt_username camper-level
-SET mqtt_password OtraClave
+SET mqtt_username -
+SET mqtt_password -
 SET mqtt_base_topic camper/level
 SHOW
 REBOOT
@@ -100,11 +103,13 @@ vacíos, usa `-` como valor cuando lo admita la ayuda `HELP` de la versión inst
 Descarga `venus-os-camper-level-venus.tar.gz`, verifica SHA-256, descomprímelo y ejecuta como root:
 
 ```sh
-./install.sh --mqtt-host 192.168.1.10 --mqtt-user camper-level
+./install.sh
 ```
 
-El instalador solicita la contraseña sin mostrarla. Para instalación directa desde GitHub,
-consulta [INSTALAR-VENUS.es.md](INSTALAR-VENUS.es.md).
+El daemon utilizará automáticamente `127.0.0.1:1883`, es decir, el mismo MQTT incluido en Venus OS.
+El instalador comprueba que `Acceso MQTT` esté activo y, si no lo está, muestra exactamente dónde
+activarlo. Para instalación directa desde GitHub o broker externo, consulta
+[INSTALAR-VENUS.es.md](INSTALAR-VENUS.es.md).
 
 ## 5. Ajustar la camper
 

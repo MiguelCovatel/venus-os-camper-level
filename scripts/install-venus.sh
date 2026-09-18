@@ -14,7 +14,7 @@ case "$REPOSITORY" in
 esac
 
 if [ "$VERSION" = latest ]; then
-    BASE_URL="https://github.com/$REPOSITORY/releases/latest/download"
+    BASE_URL=
 else
     BASE_URL="https://github.com/$REPOSITORY/releases/download/$VERSION"
 fi
@@ -32,6 +32,23 @@ TMP_ROOT=${TMPDIR:-/tmp}
 WORK_DIR=$(mktemp -d "$TMP_ROOT/camper-level.XXXXXX")
 cleanup() { rm -rf -- "$WORK_DIR"; }
 trap cleanup EXIT HUP INT TERM
+
+if [ "$VERSION" = latest ]; then
+    RELEASES_JSON="$WORK_DIR/releases.json"
+    fetch "https://api.github.com/repos/$REPOSITORY/releases?per_page=1" "$RELEASES_JSON"
+    VERSION=$(python3 - "$RELEASES_JSON" <<'PY'
+import json
+import pathlib
+import sys
+
+releases = json.loads(pathlib.Path(sys.argv[1]).read_text(encoding="utf-8"))
+if not releases or not releases[0].get("tag_name"):
+    raise SystemExit("No published GitHub release was found")
+print(releases[0]["tag_name"])
+PY
+)
+    BASE_URL="https://github.com/$REPOSITORY/releases/download/$VERSION"
+fi
 
 fetch "$BASE_URL/$ARCHIVE" "$WORK_DIR/$ARCHIVE"
 fetch "$BASE_URL/$CHECKSUM" "$WORK_DIR/$CHECKSUM"

@@ -12,11 +12,11 @@ El monitor debe indicar MPU-6500 o MPU-9250; no basta con que el ESP32 arranque.
 
 ## Venus muestra OFFLINE
 
-1. Comprueba `availability=online`.
-2. Verifica que ESP y daemon usan exactamente el mismo `base_topic`.
-3. Revisa host, puerto, usuario y contraseña MQTT en ambos lados.
-4. Mira la edad del último mensaje y los logs del servicio.
-5. Si el broker está en otra red, verifica la ruta/VPN desde Venus y ESP por separado.
+1. Comprueba que `Ajustes > Integraciones > Acceso MQTT` esté activado.
+2. En el ESP32, verifica que el servidor sea la IP local de Venus OS, puerto `1883`, sin usuario ni contraseña.
+3. El daemon debe usar `127.0.0.1:1883` y el mismo `base_topic` (`camper/level`).
+4. Comprueba `availability=online`, la edad del último mensaje y los logs del servicio.
+5. Si elegiste voluntariamente un broker externo, verifica la ruta, credenciales y VPN desde ambos equipos.
 
 Offline es intencionado: no se conserva la última inclinación como si siguiera siendo actual.
 
@@ -31,4 +31,3 @@ Comprueba permisos D-Bus, suscripción a `config/set/+` y NVS.
 - Aumenta moderadamente `stable_variation_deg` o `stable_duration_ms`.
 - No calibres cero mientras haya personas moviéndose.
 - Revisa alimentación USB y ruido I2C.
-

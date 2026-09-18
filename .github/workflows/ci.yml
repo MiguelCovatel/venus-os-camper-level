@@ -65,6 +65,7 @@ jobs:
       - run: sh -n scripts/install-venus.sh
       - run: sh -n scripts/package-release.sh
       - run: sh -n scripts/templates/install-bundle.sh
+      - run: sh scripts/templates/install-bundle.sh --help
       - run: sh -n scripts/templates/uninstall-bundle.sh
       - run: sh -n venus/dbus-camper-level/install.sh
       - run: sh -n venus/dbus-camper-level/uninstall.sh

@@ -19,6 +19,10 @@ Después de grabarlo, conecta el móvil a `CamperLevel-XXXXXX` con contraseña `
 portal se abre automáticamente; si no, visita `http://192.168.4.1`. Desde allí se configuran
 Wi-Fi, MQTT, medidas, orientación, sensibilidad, Nivel 0 y actualizaciones OTA.
 
+En una instalación normal activa primero `Ajustes > Integraciones > Acceso MQTT` en Venus OS y
+escribe su IP local en el formulario. Deja el puerto `1883`, sin usuario ni contraseña. No hace
+falta instalar Mosquitto, CasaOS ni Home Assistant.
+
 Tras conectarlo a la red, abre `http://camper-level.local` con usuario `admin`. La contraseña
 inicial es `camperlevel` y debe cambiarse durante la puesta en marcha.
 
@@ -31,10 +35,10 @@ El binario público se entrega sin credenciales. Abre el monitor serie a 115200 
 ```text
 SET wifi_ssid MiWifi
 SET wifi_password MiClave
-SET mqtt_server 192.168.1.10
+SET mqtt_server IP_DE_VENUS_OS
 SET mqtt_port 1883
-SET mqtt_username usuario
-SET mqtt_password clave
+SET mqtt_username -
+SET mqtt_password -
 SHOW
 REBOOT
 ```

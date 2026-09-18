@@ -14,6 +14,7 @@
 
 ## Venus OS
 
+- Utiliza por defecto el broker MQTT integrado en Venus OS (`127.0.0.1:1883` para el daemon).
 - Recibe MQTT y valida formato, secuencia y frescura.
 - No mantiene como válidas lecturas antiguas al perder comunicación.
 - Publica un servicio D-Bus detallado y un adaptador nativo para GUI v2.
@@ -32,6 +33,10 @@ La GUI no calcula alturas. El cálculo vive en el ESP32 para que todos los consu
 el mismo resultado. Venus conserva las medidas para mostrarlas y reenviarlas, pero la confirmación
 del ESP32 es la autoridad final.
 
+El ESP32 se conecta a la IP LAN de Venus OS, mientras que el daemon usa `127.0.0.1`; ambos llegan
+al mismo broker. `Ajustes > Integraciones > Acceso MQTT` debe estar activado. Un broker externo
+sigue siendo compatible, pero no es necesario para una instalación normal.
+
 ## Nombres aislados
 
 - Topic: `camper/level`
@@ -39,4 +44,3 @@ del ESP32 es la autoridad final.
 - D-Bus nativo: `com.victronenergy.switch.camperlevel`
 - Device instance nativa: `42`
 - Product ID: `0xC512`
-

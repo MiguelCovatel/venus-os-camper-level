@@ -3,6 +3,18 @@
 El topic base por defecto es `camper/level`. Si hay varios dispositivos, usa un topic distinto
 para cada uno, por ejemplo `camper/mi-furgo/level`.
 
+## Broker recomendado
+
+La instalación normal utiliza el broker incluido en Venus OS:
+
+- En Venus OS se activa `Ajustes > Integraciones > Acceso MQTT`.
+- El daemon se conecta a `127.0.0.1:1883`.
+- El ESP32 se conecta a la IP LAN de Venus OS, puerto `1883`, sin usuario ni contraseña.
+
+No son dos brokers diferentes: `127.0.0.1` y la IP LAN apuntan al mismo Venus OS desde lugares
+distintos. El puerto 1883 no se debe publicar en Internet. Un broker externo sigue admitido con
+las opciones avanzadas del instalador y del portal web.
+
 ## Disponibilidad
 
 ```text
