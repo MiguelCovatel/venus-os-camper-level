@@ -72,5 +72,13 @@ jobs:
       - run: sh -n venus/gui-v2/CamperLevel/install.sh
       - run: sh -n venus/gui-v2/CamperLevel/uninstall.sh
       - run: python -m py_compile scripts/configure-esp.py
+      - run: python -m py_compile scripts/validate-web-installer.py
       - run: python -m json.tool web-installer/manifest.json
+      - run: node --check web-installer/installer.js
+      - run: node --check web-installer/vendor/esp-web-tools-10.4.0/install-button.js
+      - run: python -c "import xml.etree.ElementTree as ET; ET.parse('docs/images/cableado-esp32-c3-mpu.svg')"
       - run: test -s web-installer/index.html
+      - run: test -s web-installer/vendor/esp-web-tools-10.4.0/LICENSE
+      - run: grep -q 'vendor/esp-web-tools-10.4.0/install-button.js' web-installer/index.html
+      - run: grep -q 'cableado.svg' web-installer/index.html
+      - run: "! grep -R '🎉' web-installer"

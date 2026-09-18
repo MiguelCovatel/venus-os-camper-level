@@ -3,33 +3,93 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>Instalar Camper Level</title>
-  <script type="module" src="https://unpkg.com/esp-web-tools@10/dist/web/install-button.js?module"></script>
+  <title>Instalar Camper Level · ESP32 y Venus OS</title>
+  <meta name="description" content="Instala Camper Level en un ESP32-C3 y añade su panel a Victron Venus OS.">
+  <script type="module" src="vendor/esp-web-tools-10.4.0/install-button.js"></script>
+  <script src="installer.js" defer></script>
   <style>
-    :root{color-scheme:dark;--esp-tools-button-color:#2f81f7;--esp-tools-button-text-color:#fff;--esp-tools-button-border-radius:10px}
-    *{box-sizing:border-box}body{margin:0;background:#0d1117;color:#f0f6fc;font:17px system-ui,sans-serif}main{max-width:680px;margin:auto;padding:26px}
-    .card{background:#161b22;border:1px solid #30363d;border-radius:16px;padding:22px;margin:18px 0}h1{margin-bottom:4px}.muted{color:#8b949e}
-    li{margin:12px 0}code{background:#0d1117;padding:3px 6px;border-radius:5px}.install{text-align:center;padding:18px}a{color:#58a6ff}
+    :root{color-scheme:dark;--bg:#0b1220;--card:#111a2b;--line:#263750;--text:#f8fafc;--muted:#a8b6ca;--blue:#2f81f7;--green:#22c55e;--esp-tools-button-color:#2f81f7;--esp-tools-button-text-color:#fff;--esp-tools-button-border-radius:11px}
+    *{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;overflow-x:hidden;background:radial-gradient(circle at 50% -10%,#18335e 0,#0b1220 42%);color:var(--text);font:17px/1.5 system-ui,-apple-system,"Segoe UI",sans-serif}
+    main{max-width:980px;margin:auto;padding:30px 22px 55px}.hero{text-align:center;padding:20px 0 8px}.hero h1{font-size:clamp(36px,7vw,60px);line-height:1;margin:0 0 12px}.hero p{font-size:19px;margin:0}.badge{display:inline-flex;gap:8px;align-items:center;margin-top:18px;padding:8px 13px;border:1px solid #31527c;border-radius:999px;background:#10233f;color:#dbeafe;font-weight:700}
+    .card{background:linear-gradient(145deg,#141f33,#101827);border:1px solid var(--line);border-radius:18px;padding:clamp(19px,4vw,30px);margin:20px 0;box-shadow:0 16px 38px #0004}h2{margin:0 0 15px;font-size:26px}h3{margin:22px 0 8px}.muted{color:var(--muted)}
+    .steps{counter-reset:step;list-style:none;padding:0;margin:0}.steps li{counter-increment:step;position:relative;padding:4px 0 14px 49px;min-height:42px}.steps li::before{content:counter(step);position:absolute;left:0;top:0;width:32px;height:32px;border-radius:50%;display:grid;place-items:center;background:#1f6feb;color:#fff;font-weight:800}
+    code{background:#080d17;border:1px solid #263750;padding:3px 7px;border-radius:6px;color:#dbeafe}.install{text-align:center;padding:22px 0 5px}.install button,.copy{border:0;border-radius:11px;background:var(--blue);color:#fff;padding:13px 20px;font:700 17px system-ui;cursor:pointer}.install button:hover,.copy:hover{filter:brightness(1.13)}
+    .diagram{display:block;width:100%;height:auto;border-radius:14px;border:1px solid #2d425f;background:#0b1220}.caption{margin:10px 0 0;color:var(--muted);font-size:15px}.warning{border-left:4px solid #f59e0b;background:#3b2b0d;padding:12px 15px;border-radius:8px;margin-top:15px}.command{display:flex;gap:10px;align-items:stretch;margin:13px 0}.command pre{flex:1;min-width:0;margin:0;padding:13px;overflow:auto;background:#080d17;border:1px solid #263750;border-radius:10px;color:#dbeafe;font:14px/1.45 ui-monospace,monospace;white-space:pre-wrap;word-break:break-all}.copy{flex:none;padding:10px 15px;font-size:15px}
+    .done{display:grid;grid-template-columns:auto 1fr;gap:12px;align-items:center;margin-top:18px;padding:14px;border:1px solid #245b3a;border-radius:12px;background:#0f291b}.done strong{display:block;font-size:24px;color:#86efac}.done span{color:#b9c9bd;font-size:14px}.check{width:43px;height:43px;border-radius:50%;display:grid;place-items:center;background:#166534;color:#fff;font-size:26px;font-weight:900}a{color:#60a5fa}.footer{text-align:center;color:var(--muted);font-size:15px;margin-top:30px}@media(max-width:600px){main{padding:18px 13px 40px}.card{padding:18px}.command{display:block}.copy{width:100%;margin-top:9px}.done strong{font-size:20px}}
   </style>
 </head>
 <body><main>
-  <h1>Camper Level</h1><p class="muted">Instalador para ESP32-C3 SuperMini + MPU-6500/9250</p>
-  <section class="card"><h2>Antes de empezar</h2><ol>
-    <li>Utiliza Chrome o Edge en un ordenador.</li><li>Conecta el ESP32-C3 por USB.</li><li>Cierra cualquier monitor serie que esté usando el puerto.</li>
-  </ol><div class="install">
-    <esp-web-install-button manifest="manifest.json">
-      <button slot="activate">Instalar Camper Level</button>
-      <span slot="unsupported">Este navegador no permite grabar el ESP32. Abre la página en Chrome o Edge.</span>
-      <span slot="not-allowed">El navegador ha bloqueado el acceso al puerto USB.</span>
-    </esp-web-install-button>
-  </div></section>
-  <section class="card"><h2>Después de instalar</h2><ol>
-    <li>Desde el móvil, conéctate a la Wi-Fi <code>CamperLevel-XXXXXX</code>.</li>
-    <li>Contraseña: <code>camperlevel</code>.</li><li>Si la página no aparece sola, abre <code>http://192.168.4.1</code>.</li>
-    <li>En Venus OS activa <b>Ajustes → Integraciones → Acceso MQTT</b>.</li>
-    <li>Busca su IP en <b>Ajustes → Conectividad → Wi-Fi/Ethernet</b>.</li>
-    <li>Introduce en el ESP32 la Wi-Fi, la <b>IP de Venus OS</b> y las medidas de la camper. No necesitas usuario ni contraseña MQTT.</li>
-    <li>Pulsa <b>Guardar y reiniciar</b>.</li>
-  </ol></section>
-  <p class="muted">Proyecto comunitario de <a href="https://github.com/MiguelCovatel/venus-os-camper-level">MiguelCovatel/venus-os-camper-level</a>.</p>
+  <header class="hero">
+    <h1>Camper Level</h1>
+    <p class="muted">Nivelador comunitario para ESP32-C3, MPU-6500/9250 y Victron Venus OS</p>
+    <div class="badge" aria-label="Versión del firmware">Firmware 1.1.0 · instalación guiada</div>
+  </header>
+
+  <section class="card" id="cableado">
+    <h2>1. Suelda las conexiones</h2>
+    <p>Respeta los nombres de los pines. Los dos puentes del MPU fijan el modo I2C y su dirección.</p>
+    <a href="cableado.svg" target="_blank" title="Abrir el croquis a tamaño completo">
+      <img class="diagram" src="cableado.svg" alt="Croquis de conexión entre ESP32-C3 SuperMini y MPU-6500 o MPU-9250">
+    </a>
+    <p class="caption">Pulsa el croquis para ampliarlo. El MPU se alimenta con <strong>3V3</strong>; EDA, ECL, INT y FSYNC quedan sin conectar.</p>
+    <div class="warning"><strong>Antes de conectar por USB:</strong> revisa con un multímetro que no exista continuidad directa entre 3V3 y GND.</div>
+  </section>
+
+  <section class="card" id="esp32">
+    <h2>2. Instala el firmware del ESP32</h2>
+    <ol class="steps">
+      <li>Usa Chrome o Edge en un ordenador.</li>
+      <li>Conecta el ESP32-C3 por USB y cierra cualquier monitor serie.</li>
+      <li>Pulsa el botón, elige su puerto y confirma la instalación.</li>
+    </ol>
+    <div class="install">
+      <esp-web-install-button manifest="manifest.json">
+        <button id="start-install" slot="activate">Instalar Camper Level</button>
+        <span slot="unsupported">Este navegador no puede grabar el ESP32. Abre esta página en Chrome o Edge desde un ordenador.</span>
+        <span slot="not-allowed">El navegador ha bloqueado el acceso al puerto USB.</span>
+      </esp-web-install-button>
+    </div>
+    <div class="done" aria-live="polite">
+      <div class="check">✓</div>
+      <div><strong id="install-count">—</strong><span>instalaciones completadas registradas</span></div>
+    </div>
+    <p class="caption">El contador aumenta solo cuando finaliza una grabación. Es orientativo y no recibe la configuración ni el número de serie del ESP32.</p>
+  </section>
+
+  <section class="card" id="configurar">
+    <h2>3. Configura el ESP32 desde el móvil</h2>
+    <ol class="steps">
+      <li>Conéctate a <code>CamperLevel-XXXXXX</code> con la contraseña <code>camperlevel</code>.</li>
+      <li>Si el portal no aparece, abre <code>http://192.168.4.1</code>.</li>
+      <li>Introduce la Wi-Fi de la camper, la IP de Venus OS y las medidas entre ejes y ruedas.</li>
+      <li>Deja MQTT en el puerto <code>1883</code>, sin usuario ni contraseña, y pulsa <strong>Guardar y reiniciar</strong>.</li>
+    </ol>
+  </section>
+
+  <section class="card" id="venus">
+    <h2>4. Instala el panel en Venus OS</h2>
+    <ol class="steps">
+      <li>En Venus OS activa <strong>Ajustes → Integraciones → Acceso MQTT</strong>.</li>
+      <li>Activa SSH en la red local, configura la contraseña de <code>root</code> y anota la IP de Venus OS.</li>
+      <li>Desde un ordenador abre PowerShell o Terminal y entra con <code>ssh root@IP_DE_VENUS</code>.</li>
+      <li>Pega el siguiente comando. Descarga la versión publicada, verifica su SHA-256 e instala daemon y GUI v2.</li>
+    </ol>
+    <div class="command">
+      <pre id="venus-command">curl -fsSL https://raw.githubusercontent.com/MiguelCovatel/venus-os-camper-level/main/scripts/install-venus.sh | sh</pre>
+      <button class="copy" id="copy-command" type="button">Copiar</button>
+    </div>
+    <p>Al terminar, espera unos segundos y abre <strong>Lista de dispositivos → Camper Level</strong>. También aparece en <strong>Ajustes → Integraciones → UI Plugins → CamperLevel</strong>.</p>
+    <p class="caption">Las actualizaciones se instalan ejecutando el mismo comando. La configuración y el Nivel 0 se conservan.</p>
+  </section>
+
+  <section class="card">
+    <h2>5. Ajusta el nivel cero</h2>
+    <ol class="steps">
+      <li>Nivela la camper usando un nivel de referencia.</li>
+      <li>Abre Camper Level en Venus OS y comprueba las tres medidas.</li>
+      <li>Pulsa <strong>Establecer nivel 0</strong>. El ESP32 guardará la referencia permanentemente.</li>
+    </ol>
+  </section>
+
+  <footer class="footer">Código, manual completo y soporte comunitario en <a href="https://github.com/MiguelCovatel/venus-os-camper-level">GitHub</a>.</footer>
 </main></body></html>

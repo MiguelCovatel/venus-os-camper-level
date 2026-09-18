@@ -37,9 +37,19 @@ El ZIP incluye `camper-level-factory.bin`, una imagen unificada para grabar desd
 
 ## ESP Web Tools
 
-El workflow `pages.yml` compila y publica el instalador web, su manifiesto y los cuatro binarios en
-GitHub Pages. Después de grabar, el portal cautivo del ESP32 resuelve Wi-Fi, IP de Venus OS,
-medidas, orientación y Nivel 0, por lo que ESP Web Tools es el método principal.
+El workflow `pages.yml` compila y publica el instalador web, su croquis, la copia local de ESP Web
+Tools, el manifiesto y los cuatro binarios en GitHub Pages. Después de grabar, el portal cautivo
+del ESP32 resuelve Wi-Fi, IP de Venus OS, medidas, orientación y Nivel 0, por lo que ESP Web Tools
+es el método principal.
+
+El contador es deliberadamente orientativo. `installer.js` consulta el contador sin aumentarlo al
+abrir la página y usa el endpoint `hit` únicamente cuando la herramienta muestra
+`Installation complete!`. Una caída del contador nunca debe bloquear la grabación. No debe
+añadirse SSID, IP de Venus, número de serie ni otra configuración al evento.
+
+La copia vendorizada corresponde a `esp-web-tools@10.4.0`. Al actualizarla hay que conservar la
+licencia Apache-2.0, revisar `README-CAMPER-LEVEL.md`, volver a aplicar el icono neutro y comprobar
+que el detector de finalización sigue coincidiendo con el texto de la nueva versión.
 
 Antes de etiquetar una versión hay que verificar que la página, `manifest.json`, `firmware.bin`,
 `bootloader.bin`, `partitions.bin` y `boot_app0.bin` respondan correctamente.

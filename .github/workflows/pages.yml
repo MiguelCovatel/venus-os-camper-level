@@ -6,6 +6,8 @@ on:
     paths:
       - "firmware/**"
       - "web-installer/**"
+      - "docs/images/cableado-esp32-c3-mpu.svg"
+      - "scripts/validate-web-installer.py"
       - ".github/workflows/pages.yml"
   workflow_dispatch:
 
@@ -32,13 +34,15 @@ jobs:
         shell: bash
         run: |
           mkdir -p _site/firmware
-          cp web-installer/index.html web-installer/manifest.json _site/
+          cp -R web-installer/. _site/
+          cp docs/images/cableado-esp32-c3-mpu.svg _site/cableado.svg
           cp firmware/.pio/build/esp32-c3-supermini/bootloader.bin _site/firmware/
           cp firmware/.pio/build/esp32-c3-supermini/partitions.bin _site/firmware/
           cp firmware/.pio/build/esp32-c3-supermini/firmware.bin _site/firmware/
           BOOT_APP0=$(find "$HOME/.platformio/packages/framework-arduinoespressif32" -type f -path '*/tools/partitions/boot_app0.bin' -print -quit)
           test -n "$BOOT_APP0"
           cp "$BOOT_APP0" _site/firmware/boot_app0.bin
+      - run: python scripts/validate-web-installer.py _site
       - uses: actions/configure-pages@v5
       - uses: actions/upload-pages-artifact@v4
         with:

@@ -1,0 +1,65 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1400 800" role="img" aria-labelledby="title desc">
+  <title id="title">Cableado ESP32-C3 SuperMini a MPU-6500 o MPU-9250</title>
+  <desc id="desc">3V3 alimenta VCC y NCS. GND conecta GND y AD0. GPIO8 conecta SDA y GPIO9 conecta SCL.</desc>
+  <style>
+    .h{font:700 29px system-ui,sans-serif;fill:#f8fafc}.t{font:700 20px system-ui,sans-serif;fill:#f8fafc}
+    .s{font:600 16px system-ui,sans-serif;fill:#cbd5e1}.p{font:700 17px ui-monospace,monospace;fill:#f8fafc}
+    .pad{fill:#eab308;stroke:#fef08a;stroke-width:3}.wire{fill:none;stroke-width:8;stroke-linecap:round;stroke-linejoin:round}
+  </style>
+  <rect width="1400" height="800" rx="28" fill="#0b1220"/>
+  <text x="700" y="48" text-anchor="middle" class="h">CROQUIS DE SOLDADURA · CAMPER LEVEL</text>
+  <text x="700" y="77" text-anchor="middle" class="s">Vista superior · alimenta el MPU siempre a 3,3 V</text>
+
+  <g>
+    <rect x="70" y="125" width="390" height="520" rx="32" fill="#111827" stroke="#64748b" stroke-width="4"/>
+    <rect x="177" y="91" width="176" height="55" rx="9" fill="#94a3b8" stroke="#e2e8f0" stroke-width="3"/>
+    <rect x="204" y="101" width="122" height="36" rx="5" fill="#334155"/>
+    <text x="265" y="192" text-anchor="middle" class="h">ESP32-C3</text>
+    <text x="265" y="220" text-anchor="middle" class="s">SuperMini</text>
+    <circle cx="265" cy="381" r="78" fill="#0f172a" stroke="#27364a" stroke-width="4"/>
+    <path d="M219 381h92M265 335v92" stroke="#334155" stroke-width="5"/>
+    <g><circle class="pad" cx="70" cy="255" r="12"/><text x="96" y="262" class="p" opacity=".45">5V</text>
+      <circle class="pad" cx="70" cy="305" r="12"/><text x="96" y="312" class="p">GND</text>
+      <circle class="pad" cx="70" cy="355" r="12"/><text x="96" y="362" class="p">3V3</text>
+      <circle class="pad" cx="70" cy="405" r="12"/><text x="96" y="412" class="p" opacity=".45">GPIO4</text>
+      <circle class="pad" cx="70" cy="455" r="12"/><text x="96" y="462" class="p" opacity=".45">GPIO3</text>
+      <circle class="pad" cx="70" cy="505" r="12"/><text x="96" y="512" class="p" opacity=".45">GPIO2</text>
+      <circle class="pad" cx="70" cy="555" r="12"/><text x="96" y="562" class="p" opacity=".45">GPIO1</text>
+      <circle class="pad" cx="70" cy="605" r="12"/><text x="96" y="612" class="p" opacity=".45">GPIO0</text></g>
+    <g text-anchor="end"><circle class="pad" cx="460" cy="255" r="12"/><text x="434" y="262" class="p" opacity=".45">GPIO5</text>
+      <circle class="pad" cx="460" cy="305" r="12"/><text x="434" y="312" class="p" opacity=".45">GPIO6</text>
+      <circle class="pad" cx="460" cy="355" r="12"/><text x="434" y="362" class="p" opacity=".45">GPIO7</text>
+      <circle class="pad" cx="460" cy="405" r="12"/><text x="434" y="412" class="p">GPIO8</text>
+      <circle class="pad" cx="460" cy="455" r="12"/><text x="434" y="462" class="p">GPIO9</text>
+      <circle class="pad" cx="460" cy="505" r="12"/><text x="434" y="512" class="p" opacity=".45">GPIO10</text>
+      <circle class="pad" cx="460" cy="555" r="12"/><text x="434" y="562" class="p" opacity=".45">GPIO20</text>
+      <circle class="pad" cx="460" cy="605" r="12"/><text x="434" y="612" class="p" opacity=".45">GPIO21</text></g>
+  </g>
+
+  <g>
+    <rect x="930" y="105" width="390" height="565" rx="25" fill="#17406e" stroke="#60a5fa" stroke-width="4"/>
+    <circle cx="1260" cy="150" r="20" fill="#0b1220" stroke="#93c5fd" stroke-width="4"/><circle cx="1260" cy="625" r="20" fill="#0b1220" stroke="#93c5fd" stroke-width="4"/>
+    <text x="1125" y="158" text-anchor="middle" class="h">MPU-6500 / 9250</text><text x="1125" y="185" text-anchor="middle" class="s">Modo I2C</text>
+    <rect x="1050" y="250" width="160" height="145" rx="17" fill="#111827" stroke="#94a3b8" stroke-width="5"/>
+    <g><circle class="pad" cx="930" cy="220" r="12"/><text x="958" y="227" class="p">VCC</text>
+      <circle class="pad" cx="930" cy="265" r="12"/><text x="958" y="272" class="p">GND</text>
+      <circle class="pad" cx="930" cy="310" r="12"/><text x="958" y="317" class="p">SCL</text>
+      <circle class="pad" cx="930" cy="355" r="12"/><text x="958" y="362" class="p">SDA</text>
+      <circle class="pad" cx="930" cy="400" r="12"/><text x="958" y="407" class="p" opacity=".45">EDA</text>
+      <circle class="pad" cx="930" cy="445" r="12"/><text x="958" y="452" class="p" opacity=".45">ECL</text>
+      <circle class="pad" cx="930" cy="490" r="12"/><text x="958" y="497" class="p">AD0</text>
+      <circle class="pad" cx="930" cy="535" r="12"/><text x="958" y="542" class="p" opacity=".45">INT</text>
+      <circle class="pad" cx="930" cy="580" r="12"/><text x="958" y="587" class="p">NCS</text>
+      <circle class="pad" cx="930" cy="625" r="12"/><text x="958" y="632" class="p" opacity=".45">FSYNC</text></g>
+  </g>
+
+  <path class="wire" stroke="#38bdf8" d="M460 405H690Q735 405 780 355H930"/><rect x="565" y="378" width="142" height="35" rx="17" fill="#075985"/><text x="636" y="402" text-anchor="middle" class="t">GPIO8 → SDA</text>
+  <path class="wire" stroke="#facc15" d="M460 455H710Q755 455 790 405L840 330Q855 310 885 310H930"/><rect x="576" y="428" width="142" height="35" rx="17" fill="#854d0e"/><text x="647" y="452" text-anchor="middle" class="t">GPIO9 → SCL</text>
+  <path class="wire" stroke="#ef4444" d="M70 355H30V714H790V220H930M790 580H930"/><circle cx="790" cy="220" r="9" fill="#ef4444"/><circle cx="790" cy="580" r="9" fill="#ef4444"/>
+  <rect x="480" y="693" width="245" height="38" rx="19" fill="#7f1d1d"/><text x="602" y="719" text-anchor="middle" class="t">3V3 → VCC y NCS</text>
+  <path class="wire" stroke="#d1d5db" d="M70 305H49V762H840V265H930M840 490H930"/><circle cx="840" cy="265" r="9" fill="#d1d5db"/><circle cx="840" cy="490" r="9" fill="#d1d5db"/>
+  <rect x="743" y="741" width="238" height="38" rx="19" fill="#374151"/><text x="862" y="767" text-anchor="middle" class="t">GND → GND y AD0</text>
+  <g transform="translate(505 112)"><rect width="330" height="155" rx="18" fill="#111827" stroke="#334155" stroke-width="3"/><text x="18" y="34" class="t">Resumen</text>
+    <text x="18" y="66" class="s">• 4 cables entre las placas</text><text x="18" y="94" class="s">• Puente NCS a VCC (3V3)</text><text x="18" y="122" class="s">• Puente AD0 a GND (dirección 0x68)</text><text x="18" y="147" class="s">• EDA, ECL, INT y FSYNC: sin conectar</text></g>
+  <rect x="1040" y="701" width="300" height="60" rx="14" fill="#3f1d1d" stroke="#f87171" stroke-width="2"/><text x="1190" y="727" text-anchor="middle" class="t">IMPORTANTE</text><text x="1190" y="751" text-anchor="middle" class="s">VCC del MPU a 3V3, nunca a 5V</text>
+</svg>

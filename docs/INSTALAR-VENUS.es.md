@@ -43,10 +43,17 @@ También queda disponible la ruta de respaldo
 
 ## Directamente desde GitHub
 
+Es el método recomendado para la mayoría de usuarios. Desde un ordenador abre PowerShell o
+Terminal, entra en Venus OS y ejecuta el instalador:
+
 ```sh
-export CAMPER_LEVEL_REPOSITORY=MiguelCovatel/venus-os-camper-level
-curl -fsSL "https://raw.githubusercontent.com/$CAMPER_LEVEL_REPOSITORY/main/scripts/install-venus.sh" \
-  | sh
+ssh root@IP_DE_VENUS
+```
+
+Una vez dentro de Venus OS:
+
+```sh
+curl -fsSL https://raw.githubusercontent.com/MiguelCovatel/venus-os-camper-level/main/scripts/install-venus.sh | sh
 ```
 
 El script localiza el Release publicado más reciente, aunque sea una versión candidata, verifica

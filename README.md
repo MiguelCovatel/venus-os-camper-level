@@ -26,7 +26,7 @@ Esta es la edición independiente de nivel; no incluye sensores de gases.
 
 - ESP32-C3 SuperMini.
 - Módulo MPU-6500 o MPU-9250.
-- Cuatro o cinco cables cortos y alimentación USB estable.
+- Cuatro cables entre placas, dos puentes cortos en el MPU y alimentación USB estable.
 
 | ESP32-C3 | MPU-6500/9250 | Función |
 |---|---|---|
@@ -35,8 +35,11 @@ Esta es la edición independiente de nivel; no incluye sensores de gases.
 | GPIO8 | SDA | Datos I2C |
 | GPIO9 | SCL | Reloj I2C |
 | 3V3 | NCS/CS | Fuerza el modo I2C |
+| GND | AD0 | Selecciona la dirección `0x68` |
 
-`AD0` a GND selecciona `0x68`; a 3V3 selecciona `0x69`. Ambas direcciones se detectan.
+![Croquis de soldadura ESP32-C3 SuperMini y MPU-6500/9250](docs/images/cableado-esp32-c3-mpu.svg)
+
+El firmware también detecta `AD0` a 3V3 (`0x69`), pero el montaje recomendado usa GND (`0x68`).
 Consulta [el esquema completo](docs/CABLEADO.es.md) antes de soldar.
 
 ## Instalación rápida
@@ -44,13 +47,19 @@ Consulta [el esquema completo](docs/CABLEADO.es.md) antes de soldar.
 1. Abre el [instalador web](https://miguelcovatel.github.io/venus-os-camper-level/) con Chrome o Edge y graba el ESP32 por USB.
 2. En Venus OS activa `Ajustes > Integraciones > Acceso MQTT`.
 3. Conecta el móvil a `CamperLevel-XXXXXX` con la clave `camperlevel`; solo necesitarás la Wi-Fi, la IP de Venus OS y las medidas.
-4. Descarga el paquete Venus OS y ejecuta su único `install.sh`, sin parámetros MQTT.
+4. Entra por SSH en Venus OS y ejecuta el instalador directo:
+
+   ```sh
+   curl -fsSL https://raw.githubusercontent.com/MiguelCovatel/venus-os-camper-level/main/scripts/install-venus.sh | sh
+   ```
+
 5. Abre `Lista de dispositivos > Camper Level` y pulsa **Nivel 0** con la camper nivelada.
    Como acceso alternativo, usa `Ajustes > Integraciones > UI Plugins > CamperLevel`.
 
 La guía completa está en [Inicio rápido](docs/INICIO-RAPIDO.es.md).
 
-Repositorio previsto: `MiguelCovatel/venus-os-camper-level`.
+El [instalador web](https://miguelcovatel.github.io/venus-os-camper-level/) reúne el croquis, la
+grabación del ESP32 y los pasos de Venus OS en una sola página.
 
 ## Estructura
 
